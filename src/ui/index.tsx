@@ -19,8 +19,6 @@ render(setup, {
       render: () => (
         <div className="game">
           {game.phrase}
-          <br />
-          {game.solution}
         </div>
       )
     });

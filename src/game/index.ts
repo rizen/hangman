@@ -21,9 +21,15 @@ export class MyGame extends Game<HangmanPlayer, MyGame> {
   alphabet = Array.from(Array(26)).map((e, i) => i + 65).map((x) => String.fromCharCode(x));
   phrase = '';
   solution = '';
-  makePattern = (letters: string[]) => {
+  makePattern(letters: string[]) {
     const pattern = new RegExp("([" + letters.join("|") + "])", "gm");
     return this.solution.replace(pattern, "_");
+  }
+
+  #puzzles = ["spin to win", "pay to play", "spend money to make money"];
+  pickPuzzle() {
+    this.solution = this.#puzzles[Math.floor(this.random() * this.#puzzles.length)].toUpperCase();
+    this.phrase = this.makePattern(this.alphabet);
   }
 
 }
@@ -36,14 +42,9 @@ export { Space };
  * Define your game's custom pieces and spaces.
  */
 
-const puzzles = ["spin to win", "pay to play", "spend money to make money"];
 
-export function pickPuzzle() {
-  return puzzles[Math.floor(Math.random() * puzzles.length)].toUpperCase();
-}
 
-export class Letter extends Piece { // as an example
-}
+export class Letter extends Piece { }
 
 
 
@@ -56,8 +57,7 @@ export default createGame(HangmanPlayer, MyGame, game => {
   const { action } = game;
   const { playerActions, loop, eachPlayer } = game.flowCommands;
 
-  game.solution = pickPuzzle();
-  game.phrase = game.makePattern(game.alphabet);
+  game.pickPuzzle();
 
   /**
    * Register all custom pieces and spaces
@@ -83,10 +83,12 @@ export default createGame(HangmanPlayer, MyGame, game => {
       .chooseOnBoard('letter', availableLetters.all(Letter))
       .move('letter', usedLetters)
       .do(() => {
-        game.phrase = game.makePattern(usedLetters.all(Letter).map((letter) => letter.name.toString()))
-        //console.log(usedLetters.all(Letter).map((letter) => letter.name.toString()))
+        game.phrase = game.makePattern(availableLetters.all(Letter).map((letter) => letter.name.toString()))
+        if (game.phrase == game.solution)
+          game.finish(player)
       })
       .message(`{{player}} used letter {{letter}}.`)
+
   });
 
   /**
