@@ -4,6 +4,7 @@ import {
   Player,
   Game,
 } from '@boardzilla/core';
+import { puzzles } from './puzzles.js';
 
 export class HangmanPlayer extends Player<HangmanPlayer, MyGame> {
   /**
@@ -27,9 +28,8 @@ export class MyGame extends Game<HangmanPlayer, MyGame> {
     return this.solution.replace(pattern, "_");
   }
 
-  #puzzles = ["spin to win", "pay to play", "spend money to make money"];
   pickPuzzle() {
-    this.solution = this.#puzzles[Math.floor(this.random() * this.#puzzles.length)].toUpperCase();
+    this.solution = puzzles[Math.floor(this.random() * puzzles.length)].toUpperCase();
     this.phrase = this.makePattern(this.alphabet);
   }
 
