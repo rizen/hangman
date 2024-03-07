@@ -87,8 +87,15 @@ export default createGame(HangmanPlayer, MyGame, game => {
         if (game.phrase == game.solution)
           game.finish(player)
       })
-      .message(`{{player}} used letter {{letter}}.`)
-
+      .message(`{{player}} used letter {{letter}}.`),
+    solve: player => action({ prompt: 'Solve the puzzle' })
+      .enterText('guess', { prompt: 'Solve the puzzle', initial: '' })
+      .do(({ guess }) => {
+        if (guess.toLowerCase() == game.solution.toLowerCase())
+          game.finish(player)
+        else
+          game.message(`${player} guessed ${guess} which was wrong`)
+      }),
   });
 
   /**
@@ -100,7 +107,7 @@ export default createGame(HangmanPlayer, MyGame, game => {
       eachPlayer({
         name: 'player',
         do: playerActions({
-          actions: ['chooseLetter']
+          actions: ['chooseLetter', 'solve']
         }),
       })
     )
