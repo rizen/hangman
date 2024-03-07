@@ -34,9 +34,18 @@ export class MyGame extends Game<HangmanPlayer, MyGame> {
   }
 
   addMiss() {
-    this.game.misses++;
-    if (this.game.misses >= 6)
-      this.game.finish();
+    this.misses++;
+    if (this.misses >= 6)
+      this.gameOver();
+  }
+
+  updatePhrase() {
+    this.phrase = this.makePattern($.availableLetters.all(Letter).map((letter) => letter.name.toString()))
+  }
+
+  gameOver(player?: HangmanPlayer) {
+    this.phrase = this.solution;
+    this.finish(player);
   }
 
 }
@@ -92,9 +101,9 @@ export default createGame(HangmanPlayer, MyGame, game => {
       .do(({ letter }) => {
         if (game.solution.split(letter.name).length - 1 == 0)
           game.addMiss();
-        game.phrase = game.makePattern($.availableLetters.all(Letter).map((letter) => letter.name.toString()))
+        game.updatePhrase();
         if (game.phrase == game.solution)
-          game.finish(player)
+          game.gameOver(player)
       })
       .message(`{{player}} used letter {{letter}}.`),
     solve: player => action({ prompt: 'Solve the puzzle' })
@@ -105,7 +114,7 @@ export default createGame(HangmanPlayer, MyGame, game => {
       })
       .do(({ guess }) => {
         if (guess.toLowerCase() == game.solution.toLowerCase())
-          game.finish(player)
+          game.gameOver(player)
         else {
           game.message(`${player} guessed ${guess} which was wrong`);
           game.addMiss();
