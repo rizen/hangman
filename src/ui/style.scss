@@ -1,15 +1,13 @@
 #play-area {
 
-  .jenkies {
-    border: 1px solid red;
+  .Phrase {
+    font-size: 1.5em;
   }
 
   .Space {
-    background: none;
-  }
-
-  .Phrase {
-    font-size: 1.5em;
+    &[data-name="Used Letters"] {
+      border: 1px solid red !important;
+    }
   }
 
   .Letter {
@@ -25,6 +23,16 @@
     border-top: .04em solid rgb(183, 143, 115);
     border-right: .08em solid rgb(138, 107, 85);
     border-bottom: .08em solid rgb(130, 101, 80);
+  }
+
+  #usedLetters {
+    .Letter {
+      background-color: rgb(243, 243, 243);
+      border-left-color: rgb(177, 177, 177);
+      border-top-color: rgb(183, 183, 183);
+      border-right-color: rgb(138, 138, 138);
+      border-bottom-color: rgb(130, 130, 130);
+    }
   }
 
   .Token {

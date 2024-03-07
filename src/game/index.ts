@@ -74,10 +74,10 @@ export default createGame(HangmanPlayer, MyGame, game => {
   const puzzle = game.create(Space, 'Puzzle');
   puzzle.create(Phrase, 'phrase');
   puzzle.create(Gallows, 'gallows');
-  const availableLetters = game.create(Space, 'Available Letters');
-  const usedLetters = game.create(Space, 'Used Letters');
+  game.create(Space, 'availableLetters');
+  game.create(Space, 'usedLetters');
   for (const letter of game.alphabet) {
-    availableLetters.create(Letter, letter);
+    $.availableLetters.create(Letter, letter);
   }
 
 
@@ -87,12 +87,12 @@ export default createGame(HangmanPlayer, MyGame, game => {
    */
   game.defineActions({
     chooseLetter: player => action({ prompt: 'Choose a letter' })
-      .chooseOnBoard('letter', availableLetters.all(Letter))
-      .move('letter', usedLetters)
+      .chooseOnBoard('letter', $.availableLetters.all(Letter))
+      .move('letter', $.usedLetters)
       .do(({ letter }) => {
         if (game.solution.split(letter.name).length - 1 == 0)
           game.addMiss();
-        game.phrase = game.makePattern(availableLetters.all(Letter).map((letter) => letter.name.toString()))
+        game.phrase = game.makePattern($.availableLetters.all(Letter).map((letter) => letter.name.toString()))
         if (game.phrase == game.solution)
           game.finish(player)
       })
