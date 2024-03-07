@@ -1,4 +1,21 @@
 #play-area {
+  .Letter {
+    font-size: 10em;
+    line-height: 1em;
+    text-align: center;
+    //width: 2em;
+    // height: 2em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: black;
+    background-color: rgb(243, 206, 179);
+    border-left: .04em solid rgb(177, 136, 107);
+    border-top: .04em solid rgb(183, 143, 115);
+    border-right: .08em solid rgb(138, 107, 85);
+    border-bottom: .08em solid rgb(130, 101, 80);
+  }
+
   .Token {
     perspective: 1000px;
 
