@@ -19,6 +19,7 @@ export class MyGame extends Game<HangmanPlayer, MyGame> {
   phase: number = 1; // as an example
 
   alphabet = Array.from(Array(26)).map((e, i) => i + 65).map((x) => String.fromCharCode(x));
+  misses = 0;
   phrase = '';
   solution = '';
   makePattern(letters: string[]) {
@@ -30,6 +31,12 @@ export class MyGame extends Game<HangmanPlayer, MyGame> {
   pickPuzzle() {
     this.solution = this.#puzzles[Math.floor(this.random() * this.#puzzles.length)].toUpperCase();
     this.phrase = this.makePattern(this.alphabet);
+  }
+
+  addMiss() {
+    this.game.misses++;
+    if (this.game.misses >= 6)
+      this.game.finish();
   }
 
 }
@@ -45,12 +52,10 @@ export { Space };
 
 
 export class Letter extends Piece { }
+export class Gallows extends Piece { }
+export class Phrase extends Piece { }
 
 
-
-export class Token extends Piece { // as an example
-  color: 'red' | 'blue';
-}
 
 export default createGame(HangmanPlayer, MyGame, game => {
 
@@ -62,11 +67,13 @@ export default createGame(HangmanPlayer, MyGame, game => {
   /**
    * Register all custom pieces and spaces
    */
-  game.registerClasses(Token, Letter);
+  game.registerClasses(Letter, Gallows, Phrase);
 
 
 
-  const phrase = game.create(Space, 'Phrase');
+  const puzzle = game.create(Space, 'Puzzle');
+  puzzle.create(Phrase, 'phrase');
+  puzzle.create(Gallows, 'gallows');
   const availableLetters = game.create(Space, 'Available Letters');
   const usedLetters = game.create(Space, 'Used Letters');
   for (const letter of game.alphabet) {
@@ -82,7 +89,9 @@ export default createGame(HangmanPlayer, MyGame, game => {
     chooseLetter: player => action({ prompt: 'Choose a letter' })
       .chooseOnBoard('letter', availableLetters.all(Letter))
       .move('letter', usedLetters)
-      .do(() => {
+      .do(({ letter }) => {
+        if (game.solution.split(letter.name).length - 1 == 0)
+          game.addMiss();
         game.phrase = game.makePattern(availableLetters.all(Letter).map((letter) => letter.name.toString()))
         if (game.phrase == game.solution)
           game.finish(player)
@@ -97,8 +106,10 @@ export default createGame(HangmanPlayer, MyGame, game => {
       .do(({ guess }) => {
         if (guess.toLowerCase() == game.solution.toLowerCase())
           game.finish(player)
-        else
-          game.message(`${player} guessed ${guess} which was wrong`)
+        else {
+          game.message(`${player} guessed ${guess} which was wrong`);
+          game.addMiss();
+        }
       }),
   });
 
