@@ -4,12 +4,6 @@
     font-size: 1.5em;
   }
 
-  .Space {
-    &[data-name="Used Letters"] {
-      border: 1px solid red !important;
-    }
-  }
-
   .Letter {
     font-size: 10em;
     line-height: 1em;
@@ -33,6 +27,7 @@
       border-right-color: rgb(138, 138, 138);
       border-bottom-color: rgb(130, 130, 130);
     }
+
   }
 
   .Token {
